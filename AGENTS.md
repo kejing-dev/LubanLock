@@ -1,7 +1,7 @@
 # 鲁班锁 Luban Lock: project guidance
 
 A six-piece Luban lock (Kongming lock / burr, 2x size) floating over the desk for PICO OS 6 Shared Space (Spatial SDK BOM
-6.1.9), package `com.kejing.lubanlock`, v0.1.2. Design contract: spatial-app-factory `apps/luban-lock/design-package.json`
+6.1.9), package `io.embodit.lubanlock`, v0.1.2. Design contract: spatial-app-factory `apps/luban-lock/design-package.json`
 (v1.3 — rework after QA #1, changed directly by the build station on the user's "直接改吧"; v1.2 passed gate B with the defaults: three solver-verified locks, put back = your own take-apart reversed, hint off by
 default, beech / cherry / walnut, no free mode, `v2[]` not built). Skeleton from the factory's Klotski Box (CloudAir
 lineage: two containers, theme, sound pool, level gate, board-input template); rules, solver, reasons, put-back plan,
@@ -58,7 +58,7 @@ hit replay, save codec, mesh budgets, no mirrored numbers.
 Emulators are shared: borrow with `python -I bin/emu_borrow.py borrow luban-lock` in the factory, return after.
 
 ## Debug broadcast (QA screenshots)
-`adb shell am broadcast -a com.kejing.lubanlock.DEBUG -p com.kejing.lubanlock --es cmd <cmd> --es a "<arg>"` (or
+`adb shell am broadcast -a io.embodit.lubanlock.DEBUG -p io.embodit.lubanlock --es cmd <cmd> --es a "<arg>"` (or
 `tools/ll.sh cmd <cmd> [arg]`). Log tag `LubanLock`. Every command goes through the same GameFlow calls as the volume
 and the window (taps through `routeFlow` with real holder names). `tools/shots.sh OUTDIR zh|en S01 S02 ...` captures a list.
 

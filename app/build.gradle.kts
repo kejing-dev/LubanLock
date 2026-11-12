@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.kejing.lubanlock"
+    namespace = "io.embodit.lubanlock"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.kejing.lubanlock"
+        applicationId = "io.embodit.lubanlock"
         minSdk = 35
         targetSdk = 35
         versionCode = 3

@@ -13,7 +13,7 @@ pose_now = os.environ.get("POSE")
 
 
 def cmd(c, a=""):
-    subprocess.run([ADB, "-s", DEV, "shell", "am", "broadcast", "-a", "com.kejing.lubanlock.DEBUG", "-p", "com.kejing.lubanlock",
+    subprocess.run([ADB, "-s", DEV, "shell", "am", "broadcast", "-a", "io.embodit.lubanlock.DEBUG", "-p", "io.embodit.lubanlock",
                     "--es", "cmd", c, "--es", "a", '"%s"' % a], capture_output=True)
 
 

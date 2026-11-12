@@ -11,13 +11,13 @@ Download `luban-lock-v0.1.2.apk` from [Releases](https://github.com/kejing-dev/L
 
 ```bash
 adb install -r luban-lock-v0.1.2.apk
-pico-cli app launch com.kejing.lubanlock
+pico-cli app launch io.embodit.lubanlock
 ```
 
 装过 v0.1.0 / v0.1.1 的头显，旧版包名是 `io.embodit.lubanlock`，和新版是两个应用，可以先卸掉旧的：`adb uninstall io.embodit.lubanlock`。
 Headsets with v0.1.0 / v0.1.1 have the old package `io.embodit.lubanlock`; it is a separate app, remove it with `adb uninstall io.embodit.lubanlock`.
 
-PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `com.kejing.lubanlock` · v0.1.2（pre-release / 预发布）· 离线、中英双语、无需账号
+PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock` · v0.1.2（pre-release / 预发布）· 离线、中英双语、无需账号
 
 ![鲁班锁：选中 ⑤ 号木条，方向键只亮能走的方向](docs/S03-zh.jpg)
 

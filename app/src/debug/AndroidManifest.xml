@@ -5,7 +5,7 @@
             android:name=".platform.DebugCommandReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.kejing.lubanlock.DEBUG" />
+                <action android:name="io.embodit.lubanlock.DEBUG" />
             </intent-filter>
         </receiver>
     </application>

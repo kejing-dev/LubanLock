@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Luban Lock dev harness (Windows Git Bash). Pinned to one emulator: DEV (the factory's emu_borrow.py hands it out).
-#   tools/ll.sh cmd NAME [ARG]     debug broadcast:  am broadcast -a com.kejing.lubanlock.DEBUG --es cmd NAME --es a ARG
+#   tools/ll.sh cmd NAME [ARG]     debug broadcast:  am broadcast -a io.embodit.lubanlock.DEBUG --es cmd NAME --es a ARG
 #   tools/ll.sh shot OUT.png       still capture (emulator console frame; pico-cli as fallback)
 #   tools/ll.sh log [REGEX]        logcat lines of tag LubanLock (optionally filtered)
 #   tools/ll.sh install            install the debug APK and start the app
 set -u
 DEV="${DEV:-emulator-5560}"
-PKG=com.kejing.lubanlock
+PKG=io.embodit.lubanlock
 ADB="${ADB:-$LOCALAPPDATA/Android/Sdk/platform-tools/adb.exe}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 case "${1:-}" in
