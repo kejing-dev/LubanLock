@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">鲁班锁</string>
+    <string name="lang_code">zh</string>
+
+    <string name="tab_play">玩</string>
+    <string name="tab_rules">怎么玩</string>
+    <string name="tab_settings">设置</string>
+
+    <string name="loading">正在摆好这把锁…</string>
+    <string name="lock_seg">%1$s %2$s</string>
+
+    <string name="row2_apart">拆 · 第 %1$d 步 · 最少 %2$d</string>
+    <string name="row2_apart_best">拆 · 第 %1$d 步 · 最少 %2$d · 你最好 %3$d</string>
+    <string name="row2_back">装 · 第 %1$d / %2$d 步</string>
+    <string name="row2_done">拆开了 · %1$d 步</string>
+    <string name="row2_solved">装好了 · 拆 %1$d 步，装 %2$d 步</string>
+
+    <string name="row3_start">六根木头卡在一起。找出能动的那根，把它们全拆下来。</string>
+    <string name="row3_exploded">槽口都描红了。看谁咬着谁。</string>
+    <string name="row3_close_first">先合上再动它。</string>
+    <string name="row3_back_insert">点下一根。最后出来的最先回去。</string>
+    <string name="row3_back_shift">这一步不放新的：锁里有一根要推一格。点它。</string>
+    <string name="row3_turned">我把锁转过来了，%1$s 在这儿。</string>
+    <string name="row3_inspect">%1$s 身上有 %2$d 个缺口。</string>
+    <string name="row3_inspect_key">%1$s 身上一个缺口都没有，它是钥匙。</string>
+    <string name="row3_restored_apart">接着上次：%1$s，拆到第 %2$d 步。</string>
+    <string name="row3_restored_back">接着上次：%1$s，装到第 %2$d / %3$d 步。</string>
+
+    <string name="result_apart">拆开了！%1$d 步，最少 %2$d。现在装回去。</string>
+    <string name="result_record">新纪录</string>
+    <string name="result_solved">装好了！拆 %1$d 步，装 %2$d 步。下一把更难，来？</string>
+    <string name="result_solved_last">装好了！拆 %1$d 步，装 %2$d 步。最难的一把也过了。</string>
+
+    <string name="pick_label">选木条</string>
+    <string name="pick_out">·出</string>
+    <string name="way_label">往哪走</string>
+    <string name="btn_slow">慢放一遍</string>
+    <string name="btn_slow_stop">停</string>
+    <string name="btn_hint_off">给个提示 · 关</string>
+    <string name="btn_hint_on">给个提示 · 开</string>
+    <string name="btn_explode_off">拆开看 · 关</string>
+    <string name="btn_explode_on">拆开看 · 开</string>
+    <string name="btn_undo">悔一步</string>
+    <string name="turn_label">转着看</string>
+    <string name="btn_left">左转</string>
+    <string name="btn_right">右转</string>
+    <string name="btn_flip">翻个面</string>
+    <string name="btn_reset">重来</string>
+    <string name="btn_mute">静音</string>
+    <string name="btn_muted">已静音</string>
+    <string name="btn_start_back">开始装</string>
+    <string name="btn_next">下一把</string>
+    <string name="btn_again">再拆一次</string>
+    <string name="btn_start">开始</string>
+    <string name="btn_back_play">回去玩</string>
+    <string name="btn_cancel">取消</string>
+    <string name="slow_disabled">先开提示</string>
+    <string name="explode_disabled">等它停下</string>
+
+    <string name="confirm_reset">这把重来？</string>
+    <string name="confirm_reset_line">这把已经走的 %1$d 步会清掉。</string>
+    <string name="confirm_yes_reset">重来</string>
+    <string name="confirm_lock">换成「%1$s」？</string>
+    <string name="confirm_lock_line">这把还没弄完，换了就从头开始另一把。</string>
+    <string name="confirm_yes_lock">换</string>
+    <string name="confirm_best">清空最佳记录？</string>
+    <string name="confirm_best_line">三把锁的最好步数都会清掉。</string>
+    <string name="confirm_yes_best">清空</string>
+    <string name="confirm_exit">退出鲁班锁？</string>
+    <string name="confirm_exit_line">进度已经存好，下次打开接着来。</string>
+    <string name="confirm_yes_exit">退出</string>
+    <string name="confirm_lock_note">这个框开着时锁先不动。</string>
+
+    <string name="rules_title">怎么玩</string>
+    <string name="welcome_title">鲁班锁，先看这三句</string>
+    <string name="rules_1">在这个窗口按编号选一根，它能往哪走，方向键就亮。点方向键，它就顺着槽滑。</string>
+    <string name="rules_2">六根全拆下来，再一根根装回去。</string>
+    <string name="rules_3">拆不动就开提示，它会告诉你为什么。</string>
+    <string name="why_title">为什么拆得开</string>
+    <string name="why_key">钥匙：有一根一道槽都没有，别的都给它让路。</string>
+    <string name="why_notch">槽口：一根的缺口正好让过另一根，它才滑得动。</string>
+    <string name="why_gap">空格：里面有谁都不占的格子，先挪进去才腾得出路。</string>
+    <string name="mistakes_title">常错</string>
+    <string name="mistake_1">六根从外面看都一样，槽都在里面。挨个选一下就知道谁能动。</string>
+    <string name="mistake_2">只能顺着木条的方向滑，不能抬、不能斜着拔。</string>
+    <string name="mistake_3">有时候要先推一根挪一格，下一根才出得来。</string>
+    <string name="mistake_4">装回去就是你拆的倒放：最后出来的最先进去。</string>
+    <string name="rules_source">鲁班锁也叫孔明锁，西方叫 six-piece burr，1698 年的图录里就有。这三把是按这个形制设计、电脑验证过能拆能装的。</string>
+
+    <string name="settings_title">设置</string>
+    <string name="settings_language">语言</string>
+    <string name="lang_system">跟随系统</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">English</string>
+    <string name="settings_sound">音效</string>
+    <string name="opt_on">开</string>
+    <string name="opt_off">关</string>
+    <string name="settings_reduced">减少动态</string>
+    <string name="settings_reopen_panel">重开控制窗</string>
+    <string name="settings_reopen_hint">窗口会在锁旁边重新打开。</string>
+    <string name="settings_clear_best">清空最佳记录</string>
+    <string name="settings_about_label">关于</string>
+    <string name="settings_about_text">版本 %1$s · 全离线 · 字体 Noto Sans（OFL）· 图标 Material Icons（Apache-2.0）· 音效 CC0 录音</string>
+    <string name="settings_exit">退出应用</string>
+
+    <string name="volume_closed">锁收起来了</string>
+    <string name="volume_closed_line">放回来接着玩，进度都在。</string>
+    <string name="btn_bring_lock">把锁放回来</string>
+</resources>

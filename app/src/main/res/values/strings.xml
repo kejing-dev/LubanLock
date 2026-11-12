@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Luban Lock</string>
+    <string name="lang_code">en</string>
+
+    <string name="tab_play">Play</string>
+    <string name="tab_rules">How to play</string>
+    <string name="tab_settings">Settings</string>
+
+    <string name="loading">Setting up the lock…</string>
+    <string name="lock_seg">%1$s %2$s</string>
+
+    <!-- row 2 -->
+    <string name="row2_apart">Take apart · Move %1$d · Best %2$d</string>
+    <string name="row2_apart_best">Take apart · Move %1$d · Best %2$d · Yours %3$d</string>
+    <string name="row2_back">Put back · Step %1$d / %2$d</string>
+    <string name="row2_done">Apart · %1$d moves</string>
+    <string name="row2_solved">Done · %1$d out, %2$d back</string>
+
+    <!-- row 3: what to do now -->
+    <string name="row3_start">Six sticks, locked together. Find the one that moves and take them all apart.</string>
+    <string name="row3_exploded">Cuts are marked red. See which stick bites which.</string>
+    <string name="row3_close_first">Close it first, then move it.</string>
+    <string name="row3_back_insert">Tap the next stick. Last out, first in.</string>
+    <string name="row3_back_shift">No new stick this time. One in the lock needs a push. Tap it.</string>
+    <string name="row3_turned">I turned the lock. %1$s is right here.</string>
+    <string name="row3_inspect">%1$s has %2$d cuts.</string>
+    <string name="row3_inspect_key">%1$s has no cuts at all. That\'s the key.</string>
+    <string name="row3_restored_apart">Picking up: %1$s, move %2$d of taking it apart.</string>
+    <string name="row3_restored_back">Picking up: %1$s, putting it back, step %2$d / %3$d.</string>
+
+    <!-- results -->
+    <string name="result_apart">Apart! %1$d moves, best %2$d. Now put it back.</string>
+    <string name="result_record">New best</string>
+    <string name="result_solved">Back together! %1$d moves out, %2$d back in. Next one is harder. Go?</string>
+    <string name="result_solved_last">Back together! %1$d moves out, %2$d back in. That was the hardest one.</string>
+
+    <!-- buttons -->
+    <string name="pick_label">Stick</string>
+    <string name="pick_out">·out</string>
+    <string name="way_label">Move</string>
+    <string name="btn_slow">Play it slowly</string>
+    <string name="btn_slow_stop">Stop</string>
+    <string name="btn_hint_off">Hint · off</string>
+    <string name="btn_hint_on">Hint · on</string>
+    <string name="btn_explode_off">Open up · off</string>
+    <string name="btn_explode_on">Open up · on</string>
+    <string name="btn_undo">Undo</string>
+    <string name="turn_label">Turn it</string>
+    <string name="btn_left">Left</string>
+    <string name="btn_right">Right</string>
+    <string name="btn_flip">Flip</string>
+    <string name="btn_reset">Start over</string>
+    <string name="btn_mute">Mute</string>
+    <string name="btn_muted">Muted</string>
+    <string name="btn_start_back">Put it back</string>
+    <string name="btn_next">Next lock</string>
+    <string name="btn_again">Take it apart again</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_back_play">Back to play</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="slow_disabled">Turn on the hint first</string>
+    <string name="explode_disabled">Wait for it to stop</string>
+
+    <!-- confirm (S16) -->
+    <string name="confirm_reset">Start this lock over?</string>
+    <string name="confirm_reset_line">This lock goes back to the start. Moves so far: %1$d.</string>
+    <string name="confirm_yes_reset">Start over</string>
+    <string name="confirm_lock">Switch to %1$s?</string>
+    <string name="confirm_lock_line">This lock is half done. Switching starts the other one fresh.</string>
+    <string name="confirm_yes_lock">Switch</string>
+    <string name="confirm_best">Clear all best scores?</string>
+    <string name="confirm_best_line">The best move counts of all three locks will be gone.</string>
+    <string name="confirm_yes_best">Clear</string>
+    <string name="confirm_exit">Quit Luban Lock?</string>
+    <string name="confirm_exit_line">Your place is saved. Next time you pick up where you left off.</string>
+    <string name="confirm_yes_exit">Quit</string>
+    <string name="confirm_lock_note">The lock waits while this is open.</string>
+
+    <!-- rules page (design content.tone.rulesPage) -->
+    <string name="rules_title">How to play</string>
+    <string name="welcome_title">Welcome to Luban Lock</string>
+    <string name="rules_1">Pick a stick by its number in this window. The ways it can go light up. Tap one and it slides.</string>
+    <string name="rules_2">Take all six apart, then put them back one by one.</string>
+    <string name="rules_3">Stuck? Turn on the hint. It tells you why.</string>
+    <string name="why_title">Why it comes apart</string>
+    <string name="why_key">The key: one stick has no cuts. The rest are cut around it.</string>
+    <string name="why_notch">Notches: a cut lets another stick slide past.</string>
+    <string name="why_gap">Gaps: some cells inside are empty. Nudge into them to make room.</string>
+    <string name="mistakes_title">Common slips</string>
+    <string name="mistake_1">From outside they all look the same. The cuts are inside. Pick each one to find who moves.</string>
+    <string name="mistake_2">Sticks slide straight. No lifting, no prying sideways.</string>
+    <string name="mistake_3">Sometimes you nudge one first so the next can come out.</string>
+    <string name="mistake_4">Putting back is your take-apart in reverse. Last out, first in.</string>
+    <string name="rules_source">Also called a Kongming lock, or a six-piece burr. It shows up in a 1698 catalogue. These three were designed on that pattern and computer-checked to come apart and go back.</string>
+
+    <!-- settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_language">Language</string>
+    <string name="lang_system">System</string>
+    <string name="lang_zh">中文</string>
+    <string name="lang_en">English</string>
+    <string name="settings_sound">Sound</string>
+    <string name="opt_on">On</string>
+    <string name="opt_off">Off</string>
+    <string name="settings_reduced">Less motion</string>
+    <string name="settings_reopen_panel">Reopen this window</string>
+    <string name="settings_reopen_hint">It opens again beside the lock.</string>
+    <string name="settings_clear_best">Clear best scores</string>
+    <string name="settings_about_label">About</string>
+    <string name="settings_about_text">Version %1$s · offline · fonts: Noto Sans (OFL) · icons: Material Icons (Apache-2.0) · sounds: CC0 recordings</string>
+    <string name="settings_exit">Quit app</string>
+
+    <!-- volume closed (S18b) -->
+    <string name="volume_closed">The lock is put away</string>
+    <string name="volume_closed_line">Bring it back to keep playing. Your place is saved.</string>
+    <string name="btn_bring_lock">Bring the lock back</string>
+</resources>
