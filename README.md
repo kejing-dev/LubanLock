@@ -2,22 +2,22 @@
 
 # Luban Lock | 鲁班锁
 
-**模拟器 QA 通过，真机未验证 · Emulator QA passed, not yet verified on a real headset**
+**模拟器 QA 通过，真机已验证（2026-11-12 头显试玩）· Emulator QA passed, verified on a real headset (2026-11-12)**
 
 ## 安装 / Install
 
-从 [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2) 下载 `luban-lock-v0.1.2.apk`，然后：
-Download `luban-lock-v0.1.2.apk` from [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2), then:
+从 [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2) 下载 `LubanLock-v0.1.2-debug.apk`（可直接 adb 安装），然后：
+Download `LubanLock-v0.1.2-debug.apk` (installs directly with adb) from [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2), then:
 
 ```bash
-adb install -r luban-lock-v0.1.2.apk
+adb install -r LubanLock-v0.1.2-debug.apk
 pico-cli app launch io.embodit.lubanlock
 ```
 
-装过 v0.1.0 / v0.1.1 的头显，旧版包名是 `io.embodit.lubanlock`，和新版是两个应用，可以先卸掉旧的：`adb uninstall io.embodit.lubanlock`。
-Headsets with v0.1.0 / v0.1.1 have the old package `io.embodit.lubanlock`; it is a separate app, remove it with `adb uninstall io.embodit.lubanlock`.
+Release 里的 `LubanLock-v0.1.2.apk` 是未签名的 release 包，用于应用商店上架，不能直接 adb 安装。
+`LubanLock-v0.1.2.apk` in the release is the unsigned release build for store submission; it cannot be installed with adb as is.
 
-PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock` · v0.1.2（pre-release / 预发布）· 离线、中英双语、无需账号
+PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock` · v0.1.2 · 离线、中英双语、无需账号
 
 ![鲁班锁：选中 ⑤ 号木条，方向键只亮能走的方向](docs/S03-zh.jpg)
 
@@ -55,13 +55,13 @@ Shared Space 体积窗口（`IN_VOLUME`，0.68 × 0.78 × 0.80 m）放锁和桌�
 | ![装好了](docs/S13-zh.jpg) | ![English UI](docs/S03-en.jpg) |
 | 装好了 — 拆 8 步、装 8 步 | 英文界面 |
 
-截图来自 v0.1.1 的 QA 第 2 轮；v0.1.2 只改了包名，界面和玩法与 v0.1.1 相同。
+截图来自 v0.1.1 的 QA 第 2 轮；v0.1.2 界面和玩法与 v0.1.1 相同。
 
 ### 验收状态
 
 - 模拟器 QA：第 2 轮通过（只用 ①–⑥ 把手和方向键真实点按，拆 6 根、装 6 根到装好；中英 46 张状态截图；全程无崩溃 / ANR / 文字溢出）。
-- v0.1.2 改包名后在模拟器上冒烟：中英冷启动无 ANR / 崩溃，退出后无残留进程。
-- **真机未验证**：手柄射线、手势射线、眼手三种输入都还没在头显上试过。
+- 模拟器冒烟（v0.1.2）：中英冷启动无 ANR / 崩溃，退出后无残留进程。
+- **真机已验证**：2026-11-12 在 PICO 头显上试玩通过。
 
 ### 已知问题
 
@@ -70,7 +70,6 @@ Shared Space 体积窗口（`IN_VOLUME`，0.68 × 0.78 × 0.80 m）放锁和桌�
 - 选中 6 s 不操作会自动取消选中。
 - 木纹贴图在启动后约 6–7 s 才加载上，之前是浅色木块。
 - 控制窗右沿贴着默认视野边缘。
-- 真机三种输入（手柄射线、手势射线、眼手）未验证。
 
 ---
 
@@ -95,8 +94,8 @@ A Shared Space volume (`IN_VOLUME`, 0.68 × 0.78 × 0.80 m) holds the lock and t
 ### Status
 
 - Emulator QA round 2 passed: full take-apart and reassembly with only the handles and direction keys, 46 state screenshots in Chinese and English, no crash / ANR / text overflow.
-- v0.1.2 only renames the package; smoke-tested on the emulator (cold start in both languages, clean exit).
-- **Not verified on a real headset**: controller ray, hand ray and gaze-and-pinch are untested.
+- v0.1.2 smoke-tested on the emulator (cold start in both languages, clean exit).
+- **Verified on a real headset**: played on a PICO headset on 2026-11-12.
 
 ### Known issues
 
@@ -105,7 +104,6 @@ A Shared Space volume (`IN_VOLUME`, 0.68 × 0.78 × 0.80 m) holds the lock and t
 - A selection is cleared after 6 s without input.
 - The wood texture appears about 6–7 s after launch; before that the sticks are plain light wood.
 - The control window's right edge touches the edge of the default field of view.
-- The three real-headset input methods are unverified.
 
 ## Licences
 
