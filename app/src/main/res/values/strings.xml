@@ -115,4 +115,21 @@
     <string name="volume_closed">The lock is put away</string>
     <string name="volume_closed_line">Bring it back to keep playing. Your place is saved.</string>
     <string name="btn_bring_lock">Bring the lock back</string>
+    <string name="tab_howto">Controls</string>
+    <string name="how_to_title">Controls</string>
+    <string name="how_to_pick">Pick a stick</string>
+    <string name="how_to_pick_hand">Hand: look at ①–⑥ in this window and pinch.</string>
+    <string name="how_to_pick_pad">Controller: point the ray at the number and pull the trigger.</string>
+    <string name="how_to_move">Move it</string>
+    <string name="how_to_move_hand">Hand: look at a lit way key and pinch. It slides till it stops.</string>
+    <string name="how_to_move_pad">Controller: point at the way key and pull the trigger.</string>
+    <string name="how_to_turn">Turn the lock</string>
+    <string name="how_to_turn_hand">Hand: look at Left, Right or Flip and pinch.</string>
+    <string name="how_to_turn_pad">Controller: point at the button and pull the trigger.</string>
+    <string name="how_to_stuck">Stuck</string>
+    <string name="how_to_stuck_hand">Hand: pinch Hint. It shows the next step and says why.</string>
+    <string name="how_to_stuck_pad">Controller: point at Hint and pull the trigger.</string>
+    <string name="how_to_place">Move the lock or this window</string>
+    <string name="how_to_place_hand">Hand: look at the bar under it, pinch and drag.</string>
+    <string name="how_to_place_pad">Controller: point at the bar, hold the trigger and drag.</string>
 </resources>

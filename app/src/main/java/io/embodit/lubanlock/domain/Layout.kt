@@ -68,31 +68,51 @@ data class PoseW(val pos: V3, val rot: Q)
  * volume bounds over all reachable poses x 8 turns x every exit / insert path, the tray, the eyes, the window frame.
  */
 object Layout {
-    /** Unit cell at the 2x scale: a stick is 0.18 x 0.045 x 0.045 m. */
-    const val U = 0.0225f
-    const val VOL_W = 0.68f
-    const val VOL_H = 0.78f
-    const val VOL_D = 0.80f
+    /**
+     * Unit cell at the 4x scale (v0.1.3, profile D54 "3D 主体撑满空间"; the user picked 4x on 2026-11-16): a stick is
+     * 0.36 x 0.09 x 0.09 m and the lock 0.36 m. Every length below that came from the 2x design is doubled with it
+     * ([K]); the arrows keep their 2x size in metres ([AU]): they are signs, not wood.
+     */
+    const val U = 0.045f
+    /** The 2x design's unit cell: arrow sizes and the 2x numbers the rest is scaled from. */
+    const val AU = 0.0225f
+    const val K = U / AU
+
+    /**
+     * Two volume sizes (D54): [SMALL] while the lock stands assembled, [BIG] while anything can leave it (a stick that can
+     * come out is picked, the hint shows a removal, a stick flies, a stick lies on the tray, the lock is opened up). The
+     * assembled lock's world box is 0.354 x 0.360 x 0.398 m (a cross, turned 35°): its longest edge (depth) is 70 % of
+     * SMALL_D and the others 57 % / 77 % (D54Test). SMALL is set by what shows in it: sticks nudged a cell, every turn,
+     * and the arrows of a picked stick that cannot come out reach 0.264 / 0.225 / 0.269 m from the centre. The width stays
+     * 0.62 m so the window, placed beside the small volume, ends up at the big volume's face (WINDOW_GAP). The scene
+     * origin stays the volume centre and the lock centre in both; the floor (tray) is the big volume's.
+     */
+    const val SMALL_W = 0.62f
+    const val SMALL_H = 0.47f
+    const val SMALL_D = 0.565f
+    const val VOL_W = 0.68f * K
+    const val VOL_H = 0.78f * K
+    const val VOL_D = 0.80f * K
     const val FLOOR_Y = -VOL_H / 2
     /** Lock outer box half size (8u cube centred on the volume centre). */
     const val LOCK_HALF = 4 * U
-    const val TRAY_Z = 0.22f
-    val TRAY_X = floatArrayOf(-0.25f, -0.15f, -0.05f, 0.05f, 0.15f, 0.25f)
+    const val TRAY_Z = 0.22f * K
+    val TRAY_X = floatArrayOf(-0.25f * K, -0.15f * K, -0.05f * K, 0.05f * K, 0.15f * K, 0.25f * K)
     /** Centre height of a stick lying in the tray. */
     const val TRAY_Y = FLOOR_Y + U
     const val TRAY_TOP = FLOOR_Y + 2 * U
-    /** Fly height (centre) above the tray: the stick's underside 2 cm over the tray's top. */
-    const val FLY_Y = TRAY_TOP + 0.02f + U
+    /** Fly height (centre) above the tray: the stick's underside 2 cm (x K) over the tray's top. */
+    const val FLY_Y = TRAY_TOP + 0.02f * K + U
     const val EXPLODE_CELLS = 3
     const val EXPLODE_YAW_DEG = 30f
-    /** Arrows are signs only now (the window's direction keys move the stick, rework v1.3): bigger to read at 1.75 m. */
-    const val ARROW_LEN = 3 * U
-    const val ARROW_THICK = 0.5f * U
-    const val ARROW_GAP = 0.6f * U
-    const val ARROW_GAP_Z = 0.4f * U
+    /** Arrows are signs only (the window's direction keys move the stick, rework v1.3); 2x size kept at 4x. */
+    const val ARROW_LEN = 3 * AU
+    const val ARROW_THICK = 0.5f * AU
+    const val ARROW_GAP = 0.6f * AU
+    const val ARROW_GAP_Z = 0.4f * AU
     const val ARROW_PITCH_DEG = 30f
     /** Margin kept between a flying stick and every stick it passes (design: lock box + 2 cm; here the real cells + 2 cm). */
-    const val CLEAR = 0.02f
+    const val CLEAR = 0.02f * K
 
     /**
      * Eyes relative to the volume centre. The system's default placement was measured by QA #1 (2026-11-11): the volume
@@ -292,10 +312,10 @@ object Layout {
         val (lo, hi) = if (others.isEmpty()) (V3(-LOCK_HALF, -LOCK_HALF, -LOCK_HALF) to V3(LOCK_HALF, LOCK_HALF, LOCK_HALF)) else pitchedBounds(others)
         val ext = halfExtents(piece, view.rot)
         if (dw == Dir.PY) {
-            val z = max(cur.z, hi.z + 0.03f + ext.z)
+            val z = max(cur.z, hi.z + 0.03f * K + ext.z)
             cur = V3(cur.x, cur.y, z); pts += PoseW(cur, r0)
         } else if (dw == Dir.NZ) {
-            val x = if (side > 0) max(cur.x, hi.x + 0.03f + ext.x) else min(cur.x, lo.x - 0.03f - ext.x)
+            val x = if (side > 0) max(cur.x, hi.x + 0.03f * K + ext.x) else min(cur.x, lo.x - 0.03f * K - ext.x)
             cur = V3(x, cur.y, cur.z); pts += PoseW(cur, r0)
         }
         val trayQ = conj(YAW_Q) * Q.of(trayRot(piece))
@@ -369,7 +389,7 @@ object Layout {
             val out = face + sign * (ARROW_GAP_Z + ARROW_THICK * 2)
             val z = if (dw.sign > 0) hi.z - ARROW_LEN / 2 else lo.z + ARROW_LEN / 2
             // toward / away of one stick never share a line of sight (QA q1-2): toward below, away above
-            val lift = if (dw.sign > 0) -1.4f * U else 1.4f * U
+            val lift = if (dw.sign > 0) -1.4f * AU else 1.4f * AU
             val at = if (ax == 0) V3(out, mid.y + lift, z) else V3(mid.x + lift, out, z)
             return at to dw
         }
@@ -394,22 +414,48 @@ object Layout {
     const val WINDOW_H_DP = 680f
     /**
      * Gap the system leaves between the volume's right face and the window frame, in this model's z = 0 plane. Measured
-     * on the emulator's default view: v0.1.0 (volume 0.70 m wide, QA #1) 396 px x 0.0537 deg/px = 21.3 deg and v0.1.1
-     * (0.68 m) 393 px = 21.1 deg from the lock centre to the window's left edge, i.e. 0.335 m past the face at the
-     * volume's centre depth. 0.30 m keeps a margin under that (was a 6 cm guess).
+     * on the emulator's default view (0.0537 deg/px, QA #1): v0.1.0 / v0.1.1 21.3 / 21.1 deg and v0.1.3 (0.62 m small
+     * volume, 2026-11-16) 21.4 deg from the lock centre to the window's left edge, i.e. 0.686 m out at 1.749 m: 0.37 m
+     * past the small volume's face. The window stays there when the volume grows; the big volume's face is at 0.68 m.
      */
-    const val WINDOW_GAP = 0.30f
+    const val WINDOW_GAP = 0.37f
     const val TABBAR_DP = 88f
     const val CONTROLS_BELOW_DP = 60f
 
-    /** The window frame's left edge (x) and its z plane, scene frame, for Placement.right(volume). */
-    fun windowFrameLeft(): V3 = V3(VOL_W / 2 + WINDOW_GAP, 0f, 0f)
+    /** The window frame's left edge (x) and its z plane, scene frame, for Placement.right(volume of size [vol]). */
+    fun windowFrameLeft(vol: Vol = Vol.SMALL): V3 = V3(vol.w / 2 + WINDOW_GAP, 0f, 0f)
 
     /** Horizontal angle (deg) between the lock box's rightmost silhouette and the window frame's left edge, seen from [eye]. */
-    fun windowMarginDeg(eye: V3, lockHalf: Float = LOCK_HALF): Float {
+    fun windowMarginDeg(eye: V3, lockHalf: Float = LOCK_HALF, vol: Vol = Vol.SMALL): Float {
         fun yaw(p: V3): Double = Math.toDegrees(kotlin.math.atan2((p.x - eye.x).toDouble(), (eye.z - p.z).toDouble()))
         val corners = listOf(-lockHalf, lockHalf).flatMap { x -> listOf(-lockHalf, lockHalf).flatMap { yy -> listOf(-lockHalf, lockHalf).map { z -> lockToWorld(V3(x, yy, z)) } } }
         val lockMax = corners.maxOf { yaw(it) }
-        return (yaw(windowFrameLeft()) - lockMax).toFloat()
+        return (yaw(windowFrameLeft(vol)) - lockMax).toFloat()
+    }
+
+    // ------------------------------------------------------------------ volume size (D54, v0.1.3)
+
+    enum class Vol(val w: Float, val h: Float, val d: Float) { SMALL(SMALL_W, SMALL_H, SMALL_D), BIG(VOL_W, VOL_H, VOL_D) }
+
+    /**
+     * The volume this state needs: [Vol.BIG] as soon as something can leave the lock box (a picked stick that can come
+     * out, the hint showing a removal, a flight, a stick on the tray, the lock opened up), else [Vol.SMALL].
+     */
+    fun volumeFor(st: PlayState, rules: Rules): Vol {
+        val pose = st.pose
+        val big = st.explodeOn || pose.inLock.size < 6 || st.anim is PathAnim ||
+            st.selected?.let { p -> pose.isIn(p) && st.arrows.any { d -> rules.arrow(pose, p, d)?.out == true } } == true ||
+            (st.hintOn && st.hint?.out == true)
+        return if (big) Vol.BIG else Vol.SMALL
+    }
+
+    /** The assembled lock's world bounds (home pose, [view], presentation applied): what D54 measures. */
+    fun lockBounds(rules: Rules, view: View = View()): Pair<V3, V3> {
+        var lo = V3(1e9f, 1e9f, 1e9f); var hi = V3(-1e9f, -1e9f, -1e9f)
+        for (c in worldCells(rules, Pose.HOME, view)) for (i in 0..1) for (j in 0..1) for (k in 0..1) {
+            val q = lockToWorld(V3((c.x + i) * U, (c.y + j) * U, (c.z + k) * U))
+            lo = V3(min(lo.x, q.x), min(lo.y, q.y), min(lo.z, q.z)); hi = V3(max(hi.x, q.x), max(hi.y, q.y), max(hi.z, q.z))
+        }
+        return lo to hi
     }
 }

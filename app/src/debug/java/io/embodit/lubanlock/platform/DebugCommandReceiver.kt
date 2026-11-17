@@ -74,6 +74,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
                 "S13" -> seq { fresh(); idle(); flow.solve(250); until(Phase.APART_DONE); flow.assemble(250) }
                 "S14" -> Ui.page = Page.SETTINGS
                 "S15" -> Ui.page = Page.RULES
+                "S15b" -> Ui.page = Page.HOWTO
                 "S16" -> when (f.getOrNull(1)) {
                     "exit" -> { Ui.page = Page.SETTINGS; Ui.confirm = WindowConfirm.EXIT }
                     "best" -> { Ui.page = Page.SETTINGS; Ui.confirm = WindowConfirm.CLEAR_BEST }
@@ -105,7 +106,7 @@ class DebugCommandReceiver : BroadcastReceiver() {
             "volume" -> a.toIntOrNull()?.let { v -> settings { it.copy(volume = v.coerceIn(0, 2)) } }
             "reduced" -> settings { it.copy(reducedMotion = on) }
             "coach" -> settings { it.copy(coach = on) }
-            "page" -> Ui.page = when (a) { "rules" -> Page.RULES; "settings" -> Page.SETTINGS; else -> Page.PLAY }
+            "page" -> Ui.page = when (a) { "rules" -> Page.RULES; "howto" -> Page.HOWTO; "settings" -> Page.SETTINGS; else -> Page.PLAY }
             "exitask" -> { Ui.page = Page.SETTINGS; Ui.confirm = WindowConfirm.EXIT }
             "welcome" -> { flow.welcomeDone(); Ui.page = Page.PLAY }
             "reopen" -> graph.window.reopen()

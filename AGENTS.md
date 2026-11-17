@@ -1,23 +1,25 @@
 # 鲁班锁 Luban Lock: project guidance
 
-A six-piece Luban lock (Kongming lock / burr, 2x size) floating over the desk for PICO OS 6 Shared Space (Spatial SDK BOM
-6.1.9), package `io.embodit.lubanlock`, v0.1.2. Design contract: spatial-app-factory `apps/luban-lock/design-package.json`
+A six-piece Luban lock (Kongming lock / burr, 4x size since v0.1.3, profile D54) floating over the desk for PICO OS 6 Shared Space (Spatial SDK BOM
+6.1.9), package `io.embodit.lubanlock`, v0.1.3. Design contract: spatial-app-factory `apps/luban-lock/design-package.json`
 (v1.3 — rework after QA #1, changed directly by the build station on the user's "直接改吧"; v1.2 passed gate B with the defaults: three solver-verified locks, put back = your own take-apart reversed, hint off by
 default, beech / cherry / walnut, no free mode, `v2[]` not built). Skeleton from the factory's Klotski Box (CloudAir
 lineage: two containers, theme, sound pool, level gate, board-input template); rules, solver, reasons, put-back plan,
 procedural sticks and the scene are new.
 
 ## Surfaces
-- **Lock volume** (default container `LubanLock`, Volumetric 0.68 x 0.78 x 0.80 m, fixed scale, gravity aligned, uniform
-  resize). Lock centre = volume centre, shown three-quarter on (turned 35° about the vertical, `Layout.PRES_*`; the game
-  grid stays exact in the "lock frame"); the six sticks (2x scale, 0.18 x 0.045 x 0.045 m) are meshes generated from the
+- **Lock volume** (default container `LubanLock`, Volumetric, fixed scale, gravity aligned, uniform
+  resize; two sizes since v0.1.3 (D54): 0.62 x 0.47 x 0.565 m while the lock stands assembled, 1.36 x 1.56 x 1.60 m while
+  anything can leave it, switched at run time through `windowConstraints` from `WindowCtl.volume` / `Layout.volumeFor`). Lock centre = volume centre, shown three-quarter on (turned 35° about the vertical, `Layout.PRES_*`; the game
+  grid stays exact in the "lock frame"); the six sticks (4x scale, 0.36 x 0.09 x 0.09 m) are meshes generated from the
   lock data (cells minus notches), procedural PBR wood (rings + grain noise along the stick, matt, notch walls 10 % darker,
   burnt numbers ①–⑥ on both ends and near both ends of every long face). A stick that comes out goes the L-shaped way
-  onto its slot of the tray on the volume floor (x -0.25..+0.25, z +0.22). Amber arrows, a 35 % hint ghost, gold
+  onto its slot of the tray on the volume floor (x -0.50..+0.50, z +0.44). Amber arrows, a 35 % hint ghost, gold
   outlines (inverted hulls), the selected stick glowing warm and blockers / the right stick blinking hot (emissive), red
   hole marks (slow replay), soft floor shadows. No panels and no buttons in the volume. The tray keeps every end number
   upright toward the user.
-- **Control window** (`LubanControl`, Planar 640 x 680 dp, `Placement.right(LubanLock)`): native SpatialUI `TabBar`, three
+- **Control window** (`LubanControl`, Planar 720 x 760 dp, `Placement.right(LubanLock)` beside the small volume and not moved
+  when it grows): native SpatialUI `TabBar`, four (Play / How to play / Controls / Settings since v0.1.3);
   pages 玩 / 怎么玩 / 设置; no page scrolls. [重开控制窗] closes and reopens beside the lock; [退出应用] closes both
   containers, removes the tasks, exits the process.
 
@@ -39,7 +41,7 @@ procedural sticks and the scene are new.
 
 Input (v1.3, QA #1 q1-1 / q1-4, profile D17 2° + D50): sticks are picked with the ①–⑥ handles on the play page and moved
 with its six direction keys (named as you see them; only the ways the selected stick can go are enabled). The arrows on
-the lock are signs only. The volume has one target, the whole lock (`lock`, a 23 cm box through the board-input
+the lock are signs only. The volume has one target, the whole lock (`lock`, a 46 cm box through the board-input
 template): a pinch on it reopens the control window when it was closed (S18). The `piece:<n>` / `arrow:<dir>` names are
 still understood by `routeFlow` (debug broadcast, hit replay) but no 3D entity carries a collider for them.
 
@@ -52,7 +54,7 @@ DEV=<borrowed serial> tools/ll.sh install
 53 JVM tests: canonical take-apart / put-back sentences = design reference (48 sentences, zh + en), reachable 9 / 260 / 90,
 fewest 6 / 8 / 10, hint distances 1 / 3 / 3, every reachable move scanned for NEUTRAL, 50 random take-aparts go back
 together, 14 504 exit paths (all reachable poses x 8 turns) stay in the volume and never go into a stick, arrows / ghost /
-exploded lock in the volume, every stick of every reachable pose >= 6 cm² from the measured default eye (0, +0.061,
+exploded lock in the volume, every stick of every reachable pose >= 24 cm² (6 cm² at 2x) from the measured default eye (0, +0.061,
 +1.749) with no turning, D41 window margin, flow on a virtual clock,
 hit replay, save codec, mesh budgets, no mirrored numbers.
 Emulators are shared: borrow with `python -I bin/emu_borrow.py borrow luban-lock` in the factory, return after.
@@ -79,7 +81,7 @@ and the window (taps through `routeFlow` with real holder names). `tools/shots.s
 | S11 装 · 等你选 | `goto S11` · `S11M1` / `S11wrong` in shots.sh | |
 | S12 放进去 | `goto S12` | first put-back stick on its way in, held |
 | S13 装好了 | `goto S13` | solve + assemble; result card [下一把] |
-| S14 / S15 | `page settings` / `page rules` | |
+| S14 / S15 / S15b | `page settings` / `page rules` / `page howto` | S15b = 怎么操作 (v0.1.3, B19) |
 | S16 确认 | `goto "S16 reset"` · `goto "S16 lock"` · `goto "S16 best"` · `goto "S16 exit"` · `confirm` / `no` | |
 | S17 接着上次 | make a move, force-stop, relaunch | row 3 "接着上次：…" |
 | S18 控制窗关了 | `goto S18` (= closepanel) | the lock still answers; in S10 a tap on the tray starts putting back |

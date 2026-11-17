@@ -77,8 +77,8 @@ import kotlinx.coroutines.delay
 import kotlin.system.exitProcess
 
 /**
- * The control window (Planar WindowContainer beside the lock, 640 x 520 dp): all 2D UI, three pages switched by the
- * native SpatialUI TabBar (D8): Play / How to play / Settings. No page scrolls (D44); the volume holds no panels.
+ * The control window (Planar WindowContainer beside the lock, 720 x 760 dp): all 2D UI, four pages switched by the
+ * native SpatialUI TabBar (D8): Play / How to play / Controls / Settings. No page scrolls (D44); the volume holds no panels.
  */
 @Composable
 fun ControlWindow() {
@@ -106,6 +106,7 @@ fun ControlWindow() {
         when (Ui.page) {
             Page.PLAY -> PlayPage(state, settings, graph)
             Page.RULES -> RulesPage(state, settings, graph)
+            Page.HOWTO -> HowToPage(settings, graph)
             Page.SETTINGS -> SettingsPage(settings, graph)
         }
     }
@@ -115,6 +116,7 @@ fun ControlWindow() {
     val tabs = listOf(
         Triple(Page.PLAY, R.drawable.ic_tab_play, stringResource(R.string.tab_play)),
         Triple(Page.RULES, R.drawable.ic_tab_rules, stringResource(R.string.tab_rules)),
+        Triple(Page.HOWTO, R.drawable.ic_tab_howto, stringResource(R.string.tab_howto)),
         Triple(Page.SETTINGS, R.drawable.ic_tab_settings, stringResource(R.string.tab_settings)),
     )
     NativeTabs(tabs)
@@ -128,10 +130,10 @@ private fun PageColumn(content: @Composable ColumnScope.() -> Unit) {
     Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween, content = content)
 }
 
-/** Page header (52 dp): a title and [静音] (D15: mute is always one glance away). */
+/** Page header (64 dp): a title and [静音] (D15: mute is always one glance away). */
 @Composable
 private fun Header(title: String, tag: String, settings: Settings, graph: Graph) {
-    Row(Modifier.fillMaxWidth().height(52.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth().height(64.dp), verticalAlignment = Alignment.CenterVertically) {
         Txt(title, "$tag/title", style = PicoTheme.typography.titleLarge, modifier = Modifier.weight(1f))
         Spacer(Modifier.width(10.dp))
         MuteButton(settings, graph, "$tag/mute")
@@ -254,7 +256,7 @@ private fun PlayPage(state: PlayState, settings: Settings, graph: Graph) {
         StickHandles(state, graph)
         DirectionKeys(state, graph)
         // row 4: hint · open up · undo
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             ToggleButton(stringResource(if (state.hintOn) R.string.btn_hint_on else R.string.btn_hint_off), "play/hint", on = state.hintOn,
                 onClick = { flow.setHint(!state.hintOn) }, enabled = state.phase == Phase.APART || state.phase == Phase.BACK || state.phase == Phase.APART_DONE,
                 icon = R.drawable.ic_hint, modifier = Modifier.weight(1.15f))
@@ -264,7 +266,7 @@ private fun PlayPage(state: PlayState, settings: Settings, graph: Graph) {
             SecondaryButton(stringResource(R.string.btn_undo), "play/undo", onClick = { flow.undo() }, enabled = state.canUndo, icon = R.drawable.ic_undo, modifier = Modifier.weight(0.9f))
         }
         // row 5: turn it
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
             Txt(stringResource(R.string.turn_label), "play/turn", style = PicoTheme.typography.labelLarge, modifier = Modifier.width(if (zh) 72.dp else 64.dp))
             SecondaryButton(stringResource(R.string.btn_left), "play/left", onClick = { flow.turn(-1) }, enabled = idle && state.phase != Phase.SOLVED, icon = R.drawable.ic_rotate_left, modifier = Modifier.weight(1f))
             SecondaryButton(stringResource(R.string.btn_right), "play/right", onClick = { flow.turn(1) }, enabled = idle && state.phase != Phase.SOLVED, icon = R.drawable.ic_rotate_right, modifier = Modifier.weight(1f))
@@ -284,7 +286,7 @@ private fun PlayPage(state: PlayState, settings: Settings, graph: Graph) {
 @Composable
 private fun StickHandles(state: PlayState, graph: Graph) {
     val usable = !state.inputLocked && state.phase != Phase.SOLVED && state.phase != Phase.LOADING
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
         Txt(stringResource(R.string.pick_label), "play/pick", style = PicoTheme.typography.labelLarge, modifier = Modifier.width(56.dp))
         for (p in 1..6) {
             val inLock = state.pose.isIn(p)
@@ -310,7 +312,7 @@ private fun DirectionKeys(state: PlayState, graph: Graph) {
         else -> emptyList()
     }
     val usable = !state.inputLocked && state.phase == Phase.APART && !state.explodeOn
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp), verticalAlignment = Alignment.CenterVertically) {
         Txt(stringResource(R.string.way_label), "play/way", style = PicoTheme.typography.labelLarge, modifier = Modifier.width(56.dp))
         for (w in listOf(Dir.NX, Dir.PX, Dir.PY, Dir.NY, Dir.PZ, Dir.NZ)) {
             val d = state.view.rot.transpose.dir(w)
@@ -354,7 +356,7 @@ private fun ConfirmPage(q: String, line: String, yes: String, icon: Int, title: 
             Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.size(52.dp), tint = LubanColors.Ink)
             Txt(q, "confirm/$tag", style = PicoTheme.typography.titleLarge.copy(fontSize = 28.sp), color = LubanColors.Ink, maxLines = 2)
             Txt(line, "confirm/line", style = PicoTheme.typography.bodyLarge, color = LubanColors.InkSecondary, maxLines = 2)
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 SecondaryButton(stringResource(R.string.btn_cancel), "confirm/cancel", onClick = onNo, modifier = Modifier.weight(1f).height(64.dp))
                 SecondaryButton(yes, "confirm/yes", danger = true, onClick = onYes, modifier = Modifier.weight(1f).height(64.dp))
             }
@@ -373,7 +375,7 @@ private fun VolumeClosedPage(settings: Settings, graph: Graph) {
             Txt(stringResource(R.string.volume_closed_line), "volume/line", style = PicoTheme.typography.bodyLarge, color = LubanColors.InkSecondary, maxLines = 2)
             PrimaryButton(stringResource(R.string.btn_bring_lock), "volume/bring", onClick = { graph.window.reopenVolume() }, modifier = Modifier.fillMaxWidth())
         }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             SecondaryButton(stringResource(R.string.btn_undo), "volume/undo", onClick = {}, enabled = false, icon = R.drawable.ic_undo, modifier = Modifier.weight(1f))
             SecondaryButton(stringResource(R.string.btn_hint_off), "volume/hint", onClick = {}, enabled = false, icon = R.drawable.ic_hint, modifier = Modifier.weight(1f))
         }
@@ -403,7 +405,7 @@ private fun RulesPage(state: PlayState, settings: Settings, graph: Graph) {
             }
         }
         Txt(stringResource(R.string.why_title), "rules/why", style = PicoTheme.typography.titleSmall)
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
             listOf(R.string.why_key to 0, R.string.why_notch to 1, R.string.why_gap to 2).forEach { (id, kind) ->
                 Row(Modifier.weight(1f).height(72.dp).clip(RoundedCornerShape(14.dp)).background(LubanColors.TagFace).padding(horizontal = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Canvas(Modifier.size(34.dp)) { drawWhyFigure(this, kind) }
@@ -414,7 +416,7 @@ private fun RulesPage(state: PlayState, settings: Settings, graph: Graph) {
         }
         Txt(stringResource(R.string.mistakes_title), "rules/mistakes", style = PicoTheme.typography.titleSmall)
         listOf(R.string.mistake_1, R.string.mistake_2, R.string.mistake_3, R.string.mistake_4).chunked(2).forEachIndexed { row, pair ->
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                 pair.forEachIndexed { k, id ->
                     Box(Modifier.weight(1f).height(52.dp).clip(RoundedCornerShape(12.dp)).background(LubanColors.TagFace).padding(horizontal = 10.dp), contentAlignment = Alignment.CenterStart) {
                         Txt(stringResource(id), "rules/mistake${row * 2 + k}", style = PicoTheme.typography.bodySmall, color = LubanColors.Ink, maxLines = 3)
@@ -486,6 +488,35 @@ private fun drawWhyFigure(d: DrawScope, kind: Int) = with(d) {
 }
 
 // ------------------------------------------------------------------ Settings
+
+/**
+ * 怎么操作 (profile B19, 2026-11-14): one row per main action, the hand way (look + pinch) and the controller way (ray +
+ * trigger). Everything is done in this window; the lock itself only takes a pinch to bring the window back (S18).
+ */
+@Composable
+private fun HowToPage(settings: Settings, graph: Graph) {
+    PageColumn {
+        Header(stringResource(R.string.how_to_title), "howto", settings, graph)
+        listOf(
+            Triple(R.drawable.ic_tab_play, R.string.how_to_pick, R.string.how_to_pick_hand to R.string.how_to_pick_pad),
+            Triple(R.drawable.ic_tab_howto, R.string.how_to_move, R.string.how_to_move_hand to R.string.how_to_move_pad),
+            Triple(R.drawable.ic_rotate_right, R.string.how_to_turn, R.string.how_to_turn_hand to R.string.how_to_turn_pad),
+            Triple(R.drawable.ic_hint, R.string.how_to_stuck, R.string.how_to_stuck_hand to R.string.how_to_stuck_pad),
+            Triple(R.drawable.ic_explode, R.string.how_to_place, R.string.how_to_place_hand to R.string.how_to_place_pad),
+        ).forEachIndexed { i, (icon, title, ways) ->
+            Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(LubanColors.TagFace).padding(horizontal = 16.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(painter = painterResource(icon), contentDescription = null, modifier = Modifier.size(32.dp), tint = LubanColors.Ink)
+                Spacer(Modifier.width(14.dp))
+                Txt(stringResource(title), "howto/title$i", style = PicoTheme.typography.titleSmall, color = LubanColors.Ink, maxLines = 2, modifier = Modifier.width(132.dp))
+                Spacer(Modifier.width(10.dp))
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                    Txt(stringResource(ways.first), "howto/hand$i", style = PicoTheme.typography.bodySmall, color = LubanColors.Ink, maxLines = 2)
+                    Txt(stringResource(ways.second), "howto/pad$i", style = PicoTheme.typography.bodySmall, color = LubanColors.InkSecondary, maxLines = 2)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 private fun SettingsPage(settings: Settings, graph: Graph) {

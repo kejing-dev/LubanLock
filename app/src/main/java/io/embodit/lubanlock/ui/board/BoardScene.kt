@@ -97,13 +97,22 @@ internal class BoardScene {
         if (name != null) Log.i(TAG, "HOVER $name")
     }
 
-    /** The volume's real half height (m): content scales with a uniform resize (design container: 等比缩放). */
-    fun setRegion(halfY: Float) {
-        val k = (halfY / (Layout.VOL_H / 2)).takeIf { it in 0.2f..5f } ?: 1f
+    /** The volume size the scene is laid out for now (D54): the lock shadow sits on its floor. */
+    private var vol = Layout.Vol.SMALL
+
+    /**
+     * The volume's real half height (m): content scales with a uniform resize by the user (design container: 等比缩放).
+     * [target] is the size the app asked for (WindowCtl.volume); while a resize of ours is under way (< 1.5 s since
+     * [changedAt]) the measured size is between the two, so the scale is left alone.
+     */
+    fun setRegion(halfY: Float, target: Layout.Vol, changedAt: Long) {
+        if (target != vol) { vol = target; lockShadow?.transform()?.setPosition(Vector3(0f, -vol.h / 2 + 0.001f, 0f)) }
+        if (SystemClock.uptimeMillis() - changedAt < 1500) return
+        val k = (halfY / (target.h / 2)).takeIf { it in 0.2f..5f } ?: 1f
         if (kotlin.math.abs(k - regionScale) < 1e-3f) return
         regionScale = k
         content.transform().setScaleVector(Vector3(k, k, k))
-        Log.i(TAG, "SCENE region halfY=$halfY scale=$k")
+        Log.i(TAG, "SCENE region halfY=$halfY target=$target scale=$k")
     }
 
     fun installShared(r: SceneResources) {
@@ -120,13 +129,13 @@ internal class BoardScene {
         // soft contact shadows on the volume floor (design entities3d.shadow: 影子贴片)
         lockShadow = ModelEntity(r.shadowMesh, r.shadowMat).apply {
             setName("lockShadow"); content.addChild(this)
-            transform().setPosition(Vector3(0f, Layout.FLOOR_Y + 0.001f, 0f)); transform().setScaleVector(Vector3(0.30f, 1f, 0.30f))
+            transform().setPosition(Vector3(0f, -vol.h / 2 + 0.001f, 0f)); transform().setScaleVector(Vector3(0.30f * Layout.K, 1f, 0.30f * Layout.K))
         }
         for (p in 1..6) {
             val c = Layout.trayCentre(p)
             trayShadows += ModelEntity(r.shadowMesh, r.shadowMat).apply {
                 setName("trayShadow:$p"); enabled = false; content.addChild(this)
-                transform().setPosition(Vector3(c.x, Layout.FLOOR_Y + 0.0012f, c.z)); transform().setScaleVector(Vector3(0.075f, 1f, 0.23f))
+                transform().setPosition(Vector3(c.x, Layout.FLOOR_Y + 0.0012f, c.z)); transform().setScaleVector(Vector3(0.075f * Layout.K, 1f, 0.23f * Layout.K))
             }
         }
         repeat(4) { i -> holes += ModelEntity(r.holeMesh, r.holeMat).apply { setName("hole:$i"); enabled = false; content.addChild(this); transform().setScaleVector(Vector3(Layout.U, Layout.U, Layout.U)) } }
@@ -135,7 +144,7 @@ internal class BoardScene {
             val a = ModelEntity(r.arrowMesh, r.arrowMat).apply { setName(BoardNames.arrow(d)); enabled = false }
             content.addChild(a); arrows[d] = a
         }
-        // the one 3D target: the whole lock (23 cm, about 7.5 degrees at the default 1.75 m); a pinch on it brings the
+        // the one 3D target: the whole lock (46 cm at 4x, about 15 degrees at the default 1.75 m); a pinch on it brings the
         // control window back when it was closed (S18), otherwise it is only hover feedback
         lockTarget = Entity().apply { setName(BoardNames.LOCK) }
         lockTarget!!.components.set(CollisionComponent(collisionShape = listOf(r.lockShape), physicsMaterial = r.physics))
@@ -175,7 +184,7 @@ internal class BoardScene {
             val cut = ModelEntity(pr.cut, pr.cutWood).apply { setName("cut:${piece.id}") }
             val hull = ModelEntity(pr.outer, r.glowMat).apply { setName("hull:${piece.id}"); enabled = false }
             val d = dims(piece)
-            val grow = 0.012f
+            val grow = 0.012f * Layout.K
             hull.transform().setScaleVector(Vector3((d.x + grow) / d.x, (d.y + grow) / d.y, (d.z + grow) / d.z))
             h.addChild(wood); h.addChild(cut); h.addChild(hull)
             // no collider on a stick (rework v1.3): 4.5 cm sticks touching each other cannot meet D17 (>= 2 degrees, 1.5 cm
@@ -289,11 +298,11 @@ internal class BoardScene {
                     }
                     is BumpAnim -> if (!reduced) {
                         val axis = q.rotate(V3.of(V3i.axis(piece.axis, 1)))
-                        pose = PoseW(pose.pos + axis * (0.002f * sin(t * 4 * PI.toFloat())), pose.rot)
+                        pose = PoseW(pose.pos + axis * (0.002f * Layout.K * sin(t * 4 * PI.toFloat())), pose.rot)
                     }
-                    is NopeAnim -> pose = PoseW(pose.pos + V3(0f, 0.01f * sin(t * PI.toFloat()), 0f), pose.rot)
+                    is NopeAnim -> pose = PoseW(pose.pos + V3(0f, 0.01f * Layout.K * sin(t * PI.toFloat()), 0f), pose.rot)
                     is InspectAnim -> {
-                        val lift = 0.03f * sin(t * PI.toFloat()).let { if (t < 0.15f || t > 0.85f) it else 1f.coerceAtMost(it * 1.6f) }
+                        val lift = 0.03f * Layout.K * sin(t * PI.toFloat()).let { if (t < 0.15f || t > 0.85f) it else 1f.coerceAtMost(it * 1.6f) }
                         val spin = Q.axisAngle(V3(0f, 0f, 1f), (2 * PI).toFloat() * ease((t - 0.1f) / 0.8f))
                         pose = PoseW(pose.pos + V3(0f, lift, 0f), if (reduced) pose.rot else spin * pose.rot)
                         red = true

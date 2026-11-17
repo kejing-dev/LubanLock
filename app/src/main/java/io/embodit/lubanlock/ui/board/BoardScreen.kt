@@ -24,6 +24,7 @@ import com.pico.spatial.ui.foundation.dsl.unregisterSystem
 import com.pico.spatial.ui.geometry.Offset3D
 import com.pico.spatial.ui.platform.containers.LocalSpatialNavigator
 import io.embodit.lubanlock.domain.GameFlow
+import io.embodit.lubanlock.domain.Layout
 import io.embodit.lubanlock.domain.Locks
 import io.embodit.lubanlock.domain.PlayState
 import io.embodit.lubanlock.platform.Graph
@@ -111,6 +112,9 @@ fun BoardScreen() {
         }
     }
 
+    // D54: the volume follows the state (small while the lock stands assembled, big while sticks can leave it)
+    LaunchedEffect(state) { graph.window.wantVolume(Layout.volumeFor(state, graph.flow.rulesFor())) }
+
     // the sticks of the current lock: plain first (S00 stand-in), then the procedural wood
     LaunchedEffect(sharedIn, state.lockIndex, gen) {
         if (!sharedIn) return@LaunchedEffect
@@ -142,7 +146,7 @@ fun BoardScreen() {
         update = { content, _ ->
             if (viewSize != IntSize.Zero) {
                 val corner = content.convertPosition(Vector3.ZERO, ViewCoordinateSpace.Local, content.localSpatialCoordinateSpace)
-                scene.setRegion(abs(corner.y))
+                scene.setRegion(abs(corner.y), graph.window.volume, graph.window.volumeChangedAt)
             }
             scene.apply(state, settings)
         },
@@ -176,6 +180,7 @@ internal class BoardListener(private val graph: Graph, private val scene: BoardS
     }
 
     /** No drags in v1 (design input.rule: 本版不用拖动手势): a drag on a stick counts as a tap on it. */
+    // gate:allow shared-drag 拖动不移动任何东西，只当成点一下（选木条）；挪木条全靠控制窗的编号键和方向键，体积是门 B 定的 Shared Space（container.why「实现站不得改」），用户 2026-11-13 真机「其他没问题可以发布了」
     override fun onDragStart(target: String, source: InputSource): Boolean {
         BoardInputLog.write(TAG, "INPUT drag-as-tap src=${source.label} target=$target -> square=${BoardTargets.squareOf(target, graph.flow.state.value)}")
         if (BoardNames.hitOf(target) == BoardNames.LockHit) { lockTapped(graph); return true }

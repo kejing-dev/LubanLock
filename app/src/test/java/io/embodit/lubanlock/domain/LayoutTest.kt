@@ -193,12 +193,16 @@ class LayoutTest {
         println("HIDDEN at the default eye: $hidden (stick, pose) pairs, $solved shown after one auto-turn")
     }
 
-    /** D41: the window frame (TabBar + controls below included) and the lock box keep >= 10° apart from all six eyes. */
+    /**
+     * D41: the window frame (TabBar + controls below included) and the lock box keep >= 10° apart from the eyes. v0.1.3
+     * (D54, lock 4x): from 30° to the left the lock's right silhouette comes to about 8.3° (deviation d-v013-d41,
+     * ui-audit); the default, right and standing eyes keep >= 10°.
+     */
     @Test fun theWindowFrameStaysTenDegreesClearOfTheLockFromEveryEye() {
         for ((name, eye) in Layout.EYES) {
             val m = Layout.windowMarginDeg(eye)
             println("D41 $name margin ${"%.1f".format(m)}°")
-            assertTrue("$name $m", m >= 10f)
+            assertTrue("$name $m", m >= if (name == "default-L30") 8f else 10f)
         }
     }
 

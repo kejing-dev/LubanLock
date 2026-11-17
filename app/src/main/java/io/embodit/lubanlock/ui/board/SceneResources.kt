@@ -74,7 +74,7 @@ internal class PieceRes(
 internal val SEL_GLOW = Color4(0.55f, 0.36f, 0.04f, 1f)
 internal val HOT_GLOW = Color4(0.70f, 0.10f, 0.02f, 1f)
 /** Edge of the lock's single collider (m): the 8u lock plus a margin, about 7.5° at the default 1.75 m. */
-internal const val LOCK_TARGET_M = 0.23f
+internal const val LOCK_TARGET_M = 0.23f * Layout.K
 
 internal class SceneResources private constructor() {
     private val all = ArrayList<Resource>()
@@ -113,7 +113,7 @@ internal class SceneResources private constructor() {
         /** A flat arrow pointing +Z (shaft + head), thickness along Y (design: 长 2u、粗 0.36u). */
         fun arrowGeometry(): MeshResource {
             val len = Layout.ARROW_LEN; val th = Layout.ARROW_THICK
-            val shaftW = 0.42f * Layout.U; val headW = 1.15f * Layout.U; val headL = 0.85f * Layout.U
+            val shaftW = 0.42f * Layout.AU; val headW = 1.15f * Layout.AU; val headL = 0.85f * Layout.AU
             val z0 = -len / 2; val z1 = len / 2 - headL; val z2 = len / 2
             val outline = listOf(V3(-shaftW / 2, 0f, z0), V3(shaftW / 2, 0f, z0), V3(shaftW / 2, 0f, z1), V3(headW / 2, 0f, z1), V3(0f, 0f, z2), V3(-headW / 2, 0f, z1), V3(-shaftW / 2, 0f, z1))
             val pos = ArrayList<V3>(); val nrm = ArrayList<V3>(); val idx = ArrayList<Int>()
@@ -172,7 +172,7 @@ internal class SceneResources private constructor() {
                 async(io) { r.holeMesh = cubeGeometry().keep() },
                 async(io) { r.shadowMesh = quadGeometry().keep() },
                 // the arrow's hit box is a size bigger than the arrow (design input.rule)
-                async(io) { r.arrowShape = ShapeResource.createBox(Vector3(1.6f * Layout.U, 1.2f * Layout.U, Layout.ARROW_LEN + 0.8f * Layout.U)).keep() },
+                async(io) { r.arrowShape = ShapeResource.createBox(Vector3(1.6f * Layout.AU, 1.2f * Layout.AU, Layout.ARROW_LEN + 0.8f * Layout.AU)).keep() },
                 async(io) { r.physics = PhysicsMaterialResource().keep() },
                 async(io) { r.lockShape = ShapeResource.createBox(Vector3(LOCK_TARGET_M, LOCK_TARGET_M, LOCK_TARGET_M)).keep() },
             ).awaitAll()

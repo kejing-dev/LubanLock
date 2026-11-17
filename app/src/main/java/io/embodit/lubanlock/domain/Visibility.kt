@@ -10,7 +10,7 @@ import kotlin.math.min
  * the vertical axis to the quarter that shows it best.
  */
 object Visibility {
-    const val MIN_AREA_M2 = 6e-4f
+    const val MIN_AREA_M2 = 6e-4f * Layout.K * Layout.K
 
     /** [eyeW] is in the volume frame; the cells are in the lock frame, so the eye is taken into it (presentation undone). */
     fun area(rules: Rules, pose: Pose, view: View, p: Int, eyeW: V3 = Layout.DEFAULT_EYE): Float {

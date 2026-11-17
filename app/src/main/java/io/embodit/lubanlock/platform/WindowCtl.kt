@@ -11,6 +11,7 @@ import com.pico.spatial.core.math.Vector3
 import com.pico.spatial.tracking.DataProvider
 import com.pico.spatial.tracking.hmd.HMDTrackingProvider
 import com.pico.spatial.ui.platform.containers.SpatialNavigator
+import io.embodit.lubanlock.domain.Layout
 import io.embodit.lubanlock.domain.LevelGate
 import io.embodit.lubanlock.ui.Containers
 import kotlin.math.asin
@@ -25,6 +26,10 @@ import kotlin.math.asin
  * system handle. Exit closes both containers before the tasks are removed (D44).
  */
 class WindowCtl {
+    companion object {
+        const val SHRINK_DELAY_MS = 1500L
+    }
+
     val gate = LevelGate()
     var levelHint by mutableStateOf(false)
         private set
@@ -43,6 +48,36 @@ class WindowCtl {
     private val main = Handler(Looper.getMainLooper())
     private var hmd: HMDTrackingProvider? = null
     private var hmdTried = false
+
+    /**
+     * The lock volume's size (D54, v0.1.3): [Layout.Vol.SMALL] while the lock stands assembled, [Layout.Vol.BIG] while
+     * anything can leave it. Main.kt hands it to the default container's windowConstraints. It grows at once and
+     * shrinks only after [SHRINK_DELAY_MS] of not being needed (no flapping while you pick and drop sticks). The control
+     * window is not moved: Placement.right(small volume) leaves it about 0.37 m off the small volume's face, right where
+     * the big volume's face comes to (Layout.WINDOW_GAP); placing it again beside the big volume put it ~60° to the right
+     * and Placement offsets misplace it (pico-cli-feedback, 2026-11-16).
+     */
+    var volume by mutableStateOf(Layout.Vol.SMALL)
+        private set
+    var volumeChangedAt = 0L
+        private set
+    private var wanted = Layout.Vol.SMALL
+
+    fun wantVolume(v: Layout.Vol) {
+        if (v == wanted) return
+        wanted = v
+        main.removeCallbacks(shrink)
+        if (v == Layout.Vol.BIG) applyVolume(v) else main.postDelayed(shrink, SHRINK_DELAY_MS)
+    }
+
+    private val shrink = Runnable { if (wanted == Layout.Vol.SMALL) applyVolume(Layout.Vol.SMALL) }
+
+    private fun applyVolume(v: Layout.Vol) {
+        if (v == volume) return
+        volume = v
+        volumeChangedAt = SystemClock.uptimeMillis()
+        Log.i(TAG, "VOLUME size -> $v (${v.w} x ${v.h} x ${v.d} m)")
+    }
 
     /** The board screen hands over its navigator (the window's own composition can't reopen itself). */
     fun attach(nav: SpatialNavigator) { navigator = nav }

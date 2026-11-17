@@ -30,7 +30,7 @@ PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock
 
 ### 这是什么
 
-桌上浮着一只六根木头卡在一起的鲁班锁（孔明锁，放大 2 倍）。在旁边的控制窗按编号 ①–⑥ 选一根，它能往哪走，方向键就亮；点方向键，它就顺着槽滑出来、落到桌上。六根全拆下来，再一根根装回去。每一步都告诉你这根为什么现在能动、被卡住时是哪一根卡着它。三把锁由易到难：钥匙在哪 / 先让一步 / 里面是空的。
+桌上浮着一只六根木头卡在一起的鲁班锁（孔明锁，放大 4 倍）。在旁边的控制窗按编号 ①–⑥ 选一根，它能往哪走，方向键就亮；点方向键，它就顺着槽滑出来、落到桌上。六根全拆下来，再一根根装回去。每一步都告诉你这根为什么现在能动、被卡住时是哪一根卡着它。三把锁由易到难：钥匙在哪 / 先让一步 / 里面是空的。
 
 ### 怎么玩
 
@@ -42,7 +42,7 @@ PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock
 
 ### 容器
 
-Shared Space 体积窗口（`IN_VOLUME`，0.68 × 0.78 × 0.80 m）放锁和桌上一排木条，旁边一块 640 × 680 dp 的 SpatialUI 控制窗（玩 / 怎么玩 / 设置）。系统负责摆放、拖动和缩放，不需要平面识别和锚点。锁默认绕竖直轴转 35°，六根都看得到。
+Shared Space 体积窗口（`IN_VOLUME`）放锁和桌上一排木条：锁装好时 0.62 × 0.47 × 0.565 m，锁几乎撑满；能拆出来时长到 1.36 × 1.56 × 1.60 m（v0.1.3）。旁边一块 720 × 760 dp 的 SpatialUI 控制窗（玩 / 怎么玩 / 怎么操作 / 设置）。系统负责摆放、拖动和缩放，不需要平面识别和锚点。锁默认绕竖直轴转 35°，六根都看得到。
 
 ### 截图
 
@@ -77,7 +77,7 @@ Shared Space 体积窗口（`IN_VOLUME`，0.68 × 0.78 × 0.80 m）放锁和桌�
 
 ### What it is
 
-A six-piece Luban lock (Kongming lock, six-piece burr, shown at 2x) floats over your desk. Pick a stick with the numbered ①–⑥ handles in the control window; the direction keys it can move along light up. Tap one and the stick slides along its slot and drops onto the desk. Take all six apart, then put them back one by one. Every step explains why this stick can move now, and when it is blocked, which stick is in the way. Three locks, easy to hard: Where's the key / Make room first / Hollow inside.
+A six-piece Luban lock (Kongming lock, six-piece burr, shown at 4x) floats over your desk. Pick a stick with the numbered ①–⑥ handles in the control window; the direction keys it can move along light up. Tap one and the stick slides along its slot and drops onto the desk. Take all six apart, then put them back one by one. Every step explains why this stick can move now, and when it is blocked, which stick is in the way. Three locks, easy to hard: Where's the key / Make room first / Hollow inside.
 
 ### How to play
 
@@ -89,7 +89,7 @@ A six-piece Luban lock (Kongming lock, six-piece burr, shown at 2x) floats over 
 
 ### Container
 
-A Shared Space volume (`IN_VOLUME`, 0.68 × 0.78 × 0.80 m) holds the lock and the row of sticks on the desk, next to a 640 × 680 dp SpatialUI control window (Play / How to play / Settings). The system places, moves and scales it; no plane detection or anchors needed. The lock is turned 35° about the vertical axis so all six sticks are visible.
+A Shared Space volume (`IN_VOLUME`) holds the lock and the row of sticks on the desk: 0.62 × 0.47 × 0.565 m while the lock stands assembled, so it nearly fills it, growing to 1.36 × 1.56 × 1.60 m while sticks can come out (v0.1.3). Next to it is a 720 × 760 dp SpatialUI control window (Play / How to play / Controls / Settings). The system places, moves and scales it; no plane detection or anchors needed. The lock is turned 35° about the vertical axis so all six sticks are visible.
 
 ### Status
 

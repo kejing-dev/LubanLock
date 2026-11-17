@@ -1,5 +1,11 @@
 package io.embodit.lubanlock.ui.control
 
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,8 +61,8 @@ internal fun Txt(
 internal fun PrimaryButton(text: String, tag: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
     Button(
         onClick = onClick, modifier = modifier, enabled = enabled,
-        size = ButtonDefaults.Regular.copy(height = 56.dp, minWidth = 160.dp),
-        shape = RoundedCornerShape(28.dp),
+        size = ButtonDefaults.Regular.copy(height = 64.dp, minWidth = 160.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = PicoTheme.colorScheme.interaction, contentColor = PicoTheme.colorScheme.labelPrimaryLight),
     ) {
         // design-style: inherited-content-color Button
@@ -68,8 +74,8 @@ internal fun PrimaryButton(text: String, tag: String, onClick: () -> Unit, modif
 internal fun SecondaryButton(text: String, tag: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, danger: Boolean = false, icon: Int? = null) {
     Button(
         onClick = onClick, modifier = modifier, enabled = enabled,
-        size = ButtonDefaults.Regular.copy(height = 52.dp, minWidth = 96.dp),
-        shape = RoundedCornerShape(26.dp),
+        size = ButtonDefaults.Regular.copy(height = 64.dp, minWidth = 96.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = if (danger) LubanColors.Error else PicoTheme.colorScheme.fillSecondary,
             contentColor = if (danger) LubanColors.OnError else PicoTheme.colorScheme.labelPrimary,
@@ -85,16 +91,16 @@ internal fun SecondaryButton(text: String, tag: String, onClick: () -> Unit, mod
 }
 
 /**
- * A compact key for the ①–⑥ handles and the six direction keys (v1.3, profile D50): text only, 52 dp high, 72 dp min
- * width so six fit a 640 dp window; "on" (selected stick / the hint's way) is the interaction fill.
+ * A compact key for the ①–⑥ handles and the six direction keys (v1.3, profile D50): text only, 64 dp high (B31), 72 dp min
+ * width so six fit the 720 dp window; "on" (selected stick / the hint's way) is the interaction fill.
  */
 @Composable
 internal fun KeyButton(text: String, tag: String, on: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true, big: Boolean = false, sub: String? = null) {
     val fg = if (on) PicoTheme.colorScheme.labelPrimaryLight else PicoTheme.colorScheme.labelPrimary
     Button(
         onClick = onClick, modifier = modifier, enabled = enabled,
-        size = ButtonDefaults.Regular.copy(height = 52.dp, minWidth = 72.dp),
-        shape = RoundedCornerShape(26.dp),
+        size = ButtonDefaults.Regular.copy(height = 64.dp, minWidth = 72.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = if (on) PicoTheme.colorScheme.interaction else PicoTheme.colorScheme.fillSecondary, contentColor = fg),
     ) {
         // design-style: inherited-content-color Button
@@ -109,8 +115,8 @@ internal fun ToggleButton(text: String, tag: String, on: Boolean, onClick: () ->
     val fg = if (on) PicoTheme.colorScheme.labelPrimaryLight else PicoTheme.colorScheme.labelPrimary
     Button(
         onClick = onClick, modifier = modifier, enabled = enabled,
-        size = ButtonDefaults.Regular.copy(height = 52.dp, minWidth = 96.dp),
-        shape = RoundedCornerShape(26.dp),
+        size = ButtonDefaults.Regular.copy(height = 64.dp, minWidth = 96.dp),
+        shape = RoundedCornerShape(32.dp),
         colors = ButtonDefaults.buttonColors(containerColor = if (on) PicoTheme.colorScheme.interaction else PicoTheme.colorScheme.fillSecondary, contentColor = fg),
     ) {
         if (icon != null) {
@@ -164,17 +170,26 @@ internal fun SwitchRow(label: String, tag: String, checked: Boolean, onChange: (
     }
 }
 
-/** A draggable slider that snaps to three stops (小 / 中 / 大) and shows the percentage (B20). */
+/**
+ * A draggable slider that snaps to three stops (小 / 中 / 大) and shows the percentage (B20). It follows the finger on a
+ * local Float (taps and small drags register) and snaps on release; the callback goes through rememberUpdatedState
+ * because SpatialUI Slider keeps the first onValueChange it was given (spatial-ui-skills #41).
+ */
 @Composable
 internal fun VolumeSlider(level: Int, onChange: (Int) -> Unit, modifier: Modifier = Modifier) {
+    val cur by rememberUpdatedState(onChange)
+    val curLevel by rememberUpdatedState(level)
+    var pos by remember { mutableFloatStateOf(level.toFloat()) }
+    LaunchedEffect(level) { pos = level.toFloat() }
     Row(modifier, verticalAlignment = Alignment.CenterVertically) {
         Slider(
-            value = level.toFloat(),
-            onValueChange = { v -> val snapped = kotlin.math.round(v).toInt().coerceIn(0, 2); if (snapped != level) onChange(snapped) },
+            value = pos,
+            onValueChange = { v -> pos = v },
+            onValueChangeFinished = { val snapped = kotlin.math.round(pos).toInt().coerceIn(0, 2); pos = snapped.toFloat(); if (snapped != curLevel) cur(snapped) },
             modifier = Modifier.weight(1f).height(48.dp),
             valueRange = 0f..2f,
         )
         Box(Modifier.width(12.dp))
-        Txt("${io.embodit.lubanlock.platform.VOLUME_PERCENT[level.coerceIn(0, 2)]}%", "settings/volume-pct", style = PicoTheme.typography.labelLarge, modifier = Modifier.width(56.dp))
+        Txt("${io.embodit.lubanlock.platform.VOLUME_PERCENT[kotlin.math.round(pos).toInt().coerceIn(0, 2)]}%", "settings/volume-pct", style = PicoTheme.typography.labelLarge, modifier = Modifier.width(56.dp))
     }
 }
