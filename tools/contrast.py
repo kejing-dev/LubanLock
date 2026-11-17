@@ -9,6 +9,8 @@ def L(h): y = Y(h); return 116 * (y ** (1 / 3) if y > 0.008856 else 7.787 * y + 
 GLASS = "#B4B3B1"  # darkest measured window glass (royal-ur / factory measure)
 pairs = [
     ("正文 Ink / 窗口玻璃", "#1B1F23", GLASS, 4.5), ("次要字 InkSecondary / 玻璃", "#3A3F44", GLASS, 4.5),
+    ("正文 Ink / 窗口实色底 WindowBase", "#1B1F23", "#E4E2DE", 4.5), ("次要字 InkSecondary / WindowBase", "#3A3F44", "#E4E2DE", 4.5),
+    ("强调字 Primary / WindowBase", "#1E6B66", "#E4E2DE", 4.5),
     ("第 3 行 / 结果卡 Ink / TagFace", "#1B1F23", "#FBF6EC", 4.5), ("确认页次要字 / TagFace", "#3A3F44", "#FBF6EC", 4.5),
     ("主按钮 / 开关开 白 / Primary", "#FFFFFF", "#1E6B66", 4.5), ("退出 / 确定 白 / Error", "#FFFFFF", "#B3261E", 4.5),
     ("新纪录 白 / Primary", "#FFFFFF", "#1E6B66", 4.5), ("怎么玩序号 白 / Primary", "#FFFFFF", "#1E6B66", 4.5),

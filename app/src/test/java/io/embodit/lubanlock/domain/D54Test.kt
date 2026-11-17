@@ -111,4 +111,18 @@ class D54Test {
         println("D54 window left edge ${"%.3f".format(left)} m, big volume face ${Layout.VOL_W / 2} m")
         assertTrue(left >= Layout.VOL_W / 2)
     }
+
+    /** QA #3 q3-1 (v0.1.4): while our own resize is under way the old measured size never rescales the lock. */
+    @Test fun aResizeOfOursKeepsTheScaleUntilTheSizeArrives() {
+        val small = Layout.Vol.SMALL; val big = Layout.Vol.BIG
+        // grow asked 2.1 s ago, the region still measures the small volume: leave the scale alone (was 0.30 in v0.1.3)
+        assertEquals(null, Layout.regionScale(small.h / 2, big, 2100))
+        assertEquals(null, Layout.regionScale(big.h / 2, small, 2100))
+        // the size arrived: scale 1
+        assertEquals(1f, Layout.regionScale(big.h / 2, big, 2300)!!, 1e-4f)
+        assertEquals(1f, Layout.regionScale(small.h / 2, small, 2300)!!, 1e-4f)
+        // the user's own uniform resize, long after ours: content follows it
+        assertEquals(1.5f, Layout.regionScale(small.h / 2 * 1.5f, small, 60_000)!!, 1e-4f)
+        assertEquals(0.5f, Layout.regionScale(big.h / 2 * 0.5f, big, 60_000)!!, 1e-4f)
+    }
 }

@@ -30,6 +30,12 @@ object LubanColors {
     /** Secondary / small text on the window glass (>= 4.5:1 on the darkest measured glass #B4B3B1). */
     val InkSecondary = Color(0xFF3A3F44)
     val Amber = Color(0xFFE8A33D)
+    /**
+     * Solid light base under every control-window page (QA #3 q3-2): the emulator sometimes draws only part of the
+     * system glass frame and leaves the rest black (pico-cli-feedback "玻璃面板…下半截长时间黑"), which put the S01 text
+     * on black. Close to the measured light glass, so the window still reads as glass; Ink on it 13:1.
+     */
+    val WindowBase = Color(0xFFE4E2DE)
 
     // cards / figures
     val TagFace = Color(0xFFFBF6EC)

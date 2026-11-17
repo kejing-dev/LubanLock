@@ -437,6 +437,21 @@ object Layout {
 
     enum class Vol(val w: Float, val h: Float, val d: Float) { SMALL(SMALL_W, SMALL_H, SMALL_D), BIG(VOL_W, VOL_H, VOL_D) }
 
+    /** How long a resize of ours may take before a size that is still off counts as the user's own resize. */
+    const val RESIZE_SETTLE_MS = 5000L
+
+    /**
+     * The content scale for a measured volume half height (design container: 等比缩放 by the user), or null to leave the
+     * scale alone. While a resize of ours to [target] is under way (asked [sinceChangeMs] ago) the measured size is still
+     * the old one for about 2 s on the emulator: keep the scale until it reaches the target (QA #3 q3-1 v0.1.4: a fixed
+     * 1.5 s window scaled the lock to 0.30 for a frame). After [RESIZE_SETTLE_MS] any size counts.
+     */
+    fun regionScale(halfY: Float, target: Vol, sinceChangeMs: Long): Float? {
+        val k = halfY / (target.h / 2)
+        if (sinceChangeMs < RESIZE_SETTLE_MS && kotlin.math.abs(k - 1f) > 0.05f) return null
+        return k.takeIf { it in 0.2f..5f } ?: 1f
+    }
+
     /**
      * The volume this state needs: [Vol.BIG] as soon as something can leave the lock box (a picked stick that can come
      * out, the hint showing a removal, a flight, a stick on the tray, the lock opened up), else [Vol.SMALL].

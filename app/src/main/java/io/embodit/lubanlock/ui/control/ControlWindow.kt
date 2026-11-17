@@ -26,12 +26,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -102,7 +104,18 @@ fun ControlWindow() {
         if (Ui.page != Page.SETTINGS) Ui.confirm = WindowConfirm.NONE
     }
 
-    Box(Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 18.dp)) {
+    // q3-2: at the emulator's idle 2-4 fps a fresh window sometimes shows only the top part of its frame and the rest
+    // stays black until something redraws (pico-cli-feedback "玻璃面板刚入视野或低帧率下…下半截长时间黑"). Redraw the base a
+    // few times after the window opens and after each page change; the solid base keeps it light when the glass is late.
+    var redraw by remember { mutableIntStateOf(0) }
+    LaunchedEffect(Ui.page, graph.window.panelState) {
+        for (ms in longArrayOf(300, 1000, 2000, 3500, 6000, 10000)) { delay(ms); redraw++ }
+    }
+    Box(
+        Modifier.fillMaxSize().clip(RoundedCornerShape(32.dp))
+            .drawBehind { if (redraw >= 0) drawRect(LubanColors.WindowBase) }
+            .padding(horizontal = 24.dp, vertical = 18.dp)
+    ) {
         when (Ui.page) {
             Page.PLAY -> PlayPage(state, settings, graph)
             Page.RULES -> RulesPage(state, settings, graph)

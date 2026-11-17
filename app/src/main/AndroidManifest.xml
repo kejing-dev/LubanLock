@@ -16,7 +16,12 @@
         <activity
             android:name=".platform.LaunchActivity"
             android:exported="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|density"
             android:theme="@style/Theme.LubanLock">
+            <!-- configChanges: WindowCtl grows / shrinks the volume at runtime (D54). Without these the new container
+                 size is a configuration change and the system relaunches this activity, which tears the lock scene down
+                 (QA #3 q3-1: "Relaunching ActivityRecord" → VOLUME destroyed → white sticks for 7–10 s). -->
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

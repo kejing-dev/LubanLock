@@ -102,13 +102,12 @@ internal class BoardScene {
 
     /**
      * The volume's real half height (m): content scales with a uniform resize by the user (design container: 等比缩放).
-     * [target] is the size the app asked for (WindowCtl.volume); while a resize of ours is under way (< 1.5 s since
-     * [changedAt]) the measured size is between the two, so the scale is left alone.
+     * [target] is the size the app asked for (WindowCtl.volume); while a resize of ours is under way the measured size
+     * is still the old one, so the scale is left alone ([Layout.regionScale]).
      */
     fun setRegion(halfY: Float, target: Layout.Vol, changedAt: Long) {
         if (target != vol) { vol = target; lockShadow?.transform()?.setPosition(Vector3(0f, -vol.h / 2 + 0.001f, 0f)) }
-        if (SystemClock.uptimeMillis() - changedAt < 1500) return
-        val k = (halfY / (target.h / 2)).takeIf { it in 0.2f..5f } ?: 1f
+        val k = Layout.regionScale(halfY, target, SystemClock.uptimeMillis() - changedAt) ?: return
         if (kotlin.math.abs(k - regionScale) < 1e-3f) return
         regionScale = k
         content.transform().setScaleVector(Vector3(k, k, k))
