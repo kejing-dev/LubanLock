@@ -2,27 +2,27 @@
 
 # Luban Lock | 鲁班锁
 
-**模拟器 QA 通过，真机已验证（2026-11-12 头显试玩）· Emulator QA passed, verified on a real headset (2026-11-12)**
+> **v0.1.4 · 正式版**：锁放大到 4 倍、窗口能拆时自动长大；改窗口大小不再重建场景；控制窗按钮 64 dp、新增「怎么操作」页；冷启动浅色底。模拟器 QA 第 4 轮通过，已在 PICO 头显上试玩通过。
+> **v0.1.4 release**: the lock is 4x and its volume grows while sticks can come out; resizing no longer rebuilds the scene; 64 dp control-window buttons and a new Controls page; light background on cold start. Passed emulator QA round 4 and played on a PICO headset.
 
 ## 安装 / Install
 
-从 [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2) 下载 `LubanLock-v0.1.2-debug.apk`（可直接 adb 安装），然后：
-Download `LubanLock-v0.1.2-debug.apk` (installs directly with adb) from [Releases](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.2), then:
+APK 在 [Release v0.1.4](https://github.com/kejing-dev/LubanLock/releases/tag/v0.1.4)：
 
 ```bash
-adb install -r LubanLock-v0.1.2-debug.apk
+adb install -r LubanLock-v0.1.4.apk
 pico-cli app launch io.embodit.lubanlock
 ```
 
-Release 里的 `LubanLock-v0.1.2.apk` 是未签名的 release 包，用于应用商店上架，不能直接 adb 安装。
-`LubanLock-v0.1.2.apk` in the release is the unsigned release build for store submission; it cannot be installed with adb as is.
+`LubanLock-v0.1.4.apk` 是 `assembleRelease` 出的**未签名**包（上架用，平台托管签名）；直接装头显要先签名，或在本机 `./gradlew assembleDebug` 后装 `app/build/outputs/apk/debug/app-debug.apk`。头显上如果装过别的电脑签名的旧版、报 `INSTALL_FAILED_UPDATE_INCOMPATIBLE`，先 `adb uninstall io.embodit.lubanlock` 再装。
+The release APK is an **unsigned** `assembleRelease` build (for store submission, signed by the platform); to sideload, sign it first or build `./gradlew assembleDebug` and install the debug APK. If an older build signed on another machine is installed and you get `INSTALL_FAILED_UPDATE_INCOMPATIBLE`, run `adb uninstall io.embodit.lubanlock` first.
 
-PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock` · v0.1.2 · 离线、中英双语、无需账号
+PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock` · v0.1.4 · 离线、中英双语、无需账号
 
-![鲁班锁：选中 ⑤ 号木条，方向键只亮能走的方向](docs/S03-zh.jpg)
+![鲁班锁：选中 ⑤ 号木条，方向键只亮能走的方向](docs/01-select-zh.jpg)
 
-> 演示截图来自原生 PICO 模拟器，由调试输入驱动；**非真实手势录像**。
-> Screenshots come from the native PICO emulator, driven by debug input; **not a recording of real hand gestures.**
+> 截图和演示视频（Release 附件 `video-01.mp4`）来自原生 PICO 模拟器，由调试命令驱动；**非真实手势录像**。
+> Screenshots and the demo video (`video-01.mp4` in the release) come from the native PICO emulator, driven by debug commands; **not a recording of real hand gestures.**
 
 ---
 
@@ -44,32 +44,29 @@ PICO OS 6 · PICO Spatial SDK 6.1 · Kotlin / SpatialUI · `io.embodit.lubanlock
 
 Shared Space 体积窗口（`IN_VOLUME`）放锁和桌上一排木条：锁装好时 0.62 × 0.47 × 0.565 m，锁几乎撑满；能拆出来时长到 1.36 × 1.56 × 1.60 m（v0.1.3）。旁边一块 720 × 760 dp 的 SpatialUI 控制窗（玩 / 怎么玩 / 怎么操作 / 设置）。系统负责摆放、拖动和缩放，不需要平面识别和锚点。锁默认绕竖直轴转 35°，六根都看得到。
 
-### 截图
+### 截图（模拟器，中文界面，v0.1.4）
 
 | | |
 |---|---|
-| ![顶住：卡着它的木条亮红光](docs/S05-zh.jpg) | ![抽出来了：木条顺着槽滑出](docs/S06-zh.jpg) |
+| ![顶住：卡着它的木条亮红光](docs/02-blocked-zh.jpg) | ![抽出来了：木条顺着槽滑出](docs/03-out-zh.jpg) |
 | 顶住 — 说明框写出谁卡着它 | 抽出来了 — 木条顺着槽滑出锁外 |
-| ![给个提示：钥匙那根先动](docs/M1-key-zh.jpg) | ![拆开了：六根木条摆在桌上](docs/S10-zh.jpg) |
+| ![给个提示：钥匙那根先动](docs/04-hint-zh.jpg) | ![拆开了：六根木条摆在桌上](docs/05-apart-zh.jpg) |
 | 给个提示 — 告诉你钥匙是哪根、为什么 | 拆开了 — 六根按编号摆在桌上，开始装 |
-| ![装好了](docs/S13-zh.jpg) | ![English UI](docs/S03-en.jpg) |
-| 装好了 — 拆 8 步、装 8 步 | 英文界面 |
+| ![装好了](docs/06-solved-zh.jpg) | ![English UI](docs/01-select-en.jpg) |
+| 装好了 — 拆 6 步、装 6 步 | 英文界面 |
 
-截图来自 v0.1.1 的 QA 第 2 轮；v0.1.2 界面和玩法与 v0.1.1 相同。
+截图 2026-11-18 在 v0.1.4 上重拍（PICO 模拟器 High Definition 2560，原生裁 16:9，不放大），状态用调试广播定住。
 
 ### 验收状态
 
-- 模拟器 QA：第 2 轮通过（只用 ①–⑥ 把手和方向键真实点按，拆 6 根、装 6 根到装好；中英 46 张状态截图；全程无崩溃 / ANR / 文字溢出）。
-- 模拟器冒烟（v0.1.2）：中英冷启动无 ANR / 崩溃，退出后无残留进程。
-- **真机已验证**：2026-11-12 在 PICO 头显上试玩通过。
+- 模拟器 QA：第 4 轮通过（只用 ①–⑥ 把手和方向键真实点按，拆 6 根、装 6 根到装好；改窗口大小 4 轮 0 次重建；中英冷启动浅色底、对比度 ≥ 6.27:1；全程无崩溃 / ANR / 文字溢出）。
+- **真机**：v0.1.4 已装 PICO 头显并试玩通过（2026-11-17）。
 
 ### 已知问题
 
-- **K1 控制窗按钮偏小**：①–⑥ 把手和方向键高 52 dp，窗口在约 1.34 m 处时约 1.7°、按钮间隙 8 dp。符合窗口控件 ≥ 48 dp 的规矩，但低于 3D 目标 2° 的标准；真机上若觉得难点，下一版加大到 60–64 dp。
+- 窗口变大时（选中一根能抽出的木条、或装好后），系统改尺寸过渡会让锁先放大约 1.5 倍约 0.25 s 再回原样（平台行为，应用侧去不掉）。
 - 默认视角看不到锁的顶面（不挡玩，需要时用「翻个面」）。
 - 选中 6 s 不操作会自动取消选中。
-- 木纹贴图在启动后约 6–7 s 才加载上，之前是浅色木块。
-- 控制窗右沿贴着默认视野边缘。
 
 ---
 
@@ -93,17 +90,14 @@ A Shared Space volume (`IN_VOLUME`) holds the lock and the row of sticks on the 
 
 ### Status
 
-- Emulator QA round 2 passed: full take-apart and reassembly with only the handles and direction keys, 46 state screenshots in Chinese and English, no crash / ANR / text overflow.
-- v0.1.2 smoke-tested on the emulator (cold start in both languages, clean exit).
-- **Verified on a real headset**: played on a PICO headset on 2026-11-12.
+- Emulator QA round 4 passed: full take-apart and reassembly with real taps on the handles and direction keys only; 4 resize rounds with no rebuild; light background on cold start in both languages (contrast ≥ 6.27:1); no crash / ANR / text overflow.
+- **Headset**: v0.1.4 installed and played on a PICO headset (2026-11-17).
 
 ### Known issues
 
-- **K1 small control-window buttons**: handles and direction keys are 52 dp, about 1.7° at roughly 1.34 m with 8 dp gaps. They meet the ≥ 48 dp window-control rule but not the 2° target for 3D objects; if they are hard to hit on a real headset, the next version goes to 60–64 dp.
+- When the volume grows (a stick that can come out is selected, or the lock is solved), the system's resize transition shows the lock about 1.5x larger for about 0.25 s before it settles (platform behaviour).
 - The default view does not show the top face of the lock (use Flip if needed).
 - A selection is cleared after 6 s without input.
-- The wood texture appears about 6–7 s after launch; before that the sticks are plain light wood.
-- The control window's right edge touches the edge of the default field of view.
 
 ## Licences
 
